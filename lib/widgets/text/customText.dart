@@ -1,4 +1,6 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: file_names
+
+import 'package:flutter/material.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
 
 class CustomText {
@@ -18,15 +20,13 @@ class CustomText {
   }
 
   static customTextAppBar({required String text, Color? color, double? fontSize, FontWeight? fontWeight}){
-   return Container(
-     child: Text(
-        text,
-        style: TextStyle(
-          color: color ?? CustomColors.PRIMARYTEXTCOLOR,
-          fontSize: fontSize ?? 18,
-          fontWeight: fontWeight ?? FontWeight.normal
-        ),),
-   );
+   return Text(
+      text,
+      style: TextStyle(
+        color: color ?? CustomColors.PRIMARYTEXTCOLOR,
+        fontSize: fontSize ?? 18,
+        fontWeight: fontWeight ?? FontWeight.normal
+      ),);
   }
 
 

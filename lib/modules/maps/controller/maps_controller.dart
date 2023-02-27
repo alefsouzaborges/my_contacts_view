@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -12,7 +10,6 @@ class MapsController extends GetxController {
   RxDouble latitude = 0.0.obs;
   RxDouble longitude = 0.0.obs;
   late GoogleMapController mapController;
-
 
   Future<Position> _positionActual({required BuildContext context}) async {
       LocationPermission permissao;

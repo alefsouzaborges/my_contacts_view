@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, avoid_unnecessary_containers
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, avoid_unnecessary_containers, prefer_final_fields
 
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,6 @@ import 'package:my_contacts_view/modules/maps/controller/maps_controller.dart';
 import 'package:my_contacts_view/modules/perfil/view/perfil_view.dart';
 import 'package:my_contacts_view/shared/config.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
-import 'package:my_contacts_view/utils/enumerations/enumerations.dart';
-import 'package:my_contacts_view/utils/permissions/permission.dart';
 import 'package:my_contacts_view/widgets/appbar/customAppBar.dart';
 import 'package:my_contacts_view/widgets/avatar/customAvatar.dart';
 import 'package:my_contacts_view/widgets/cards/customCards.dart';
@@ -88,28 +86,22 @@ class _HomePageState extends State<HomePage>
                           itemCount: _registerController.listContacts.length,
                           itemBuilder: (context, index) {
                             _registerController.getNameResumed(
-                                nome: _registerController
-                                    .listContacts[index].nome
-                                    .toString());
+                                nome: _registerController.listContacts[index].nome.toString());
                             return Container(
                                 padding: EdgeInsets.all(5),
-                                width: 80,
+                                width: 90,
                                 child: CustomAvatar.customAvatarStatus(
                                     context: context,
-                                    image: _registerController
-                                                .listContacts[index].sexo ==
-                                            'M'
+                                    image: _registerController.listContacts[index].sexo == 'M'
                                         ? 'assets/icons/male.png'
                                         : 'assets/icons/female.png',
-                                    nome: _registerController.nameResumed
-                                        .toString(),
+                                    nome: _registerController.nameResumed.toString(),
                                     onTap: () async {
                                       _mapsController.mapController.animateCamera(CameraUpdate.newLatLng(LatLng(double.parse(_registerController.listContacts[index].latitude.toString()), double.parse(_registerController.listContacts[index].longitude.toString()))));
                                       await _animationController!.forward();
                                       _registerController.isEditing.value = true;
                                       await _registerController.populateInputs(
-                                          model: _registerController
-                                              .listContacts[index],
+                                          model: _registerController.listContacts[index],
                                           context: context);
                                     }));
                           },
@@ -130,7 +122,8 @@ class _HomePageState extends State<HomePage>
                           zoom: 18),
                           zoomControlsEnabled: true,
                           mapType: MapType.normal,
-                          onMapCreated: onMapCreate
+                          onMapCreated: onMapCreate,
+                          markers: _registerController.markers,
                     );
                   })),
             )
@@ -211,5 +204,6 @@ class _HomePageState extends State<HomePage>
   onMapCreate(GoogleMapController gmc) async {
     _mapsController.mapController = gmc;
     _mapsController.getPosition(context: context);
+
   }
 }

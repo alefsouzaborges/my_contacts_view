@@ -1,6 +1,5 @@
-// ignore_for_file: prefer_const_constructors, no_leading_underscores_for_local_identifiers
+// ignore_for_file: prefer_const_constructors, no_leading_underscores_for_local_identifiers, file_names
 
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +15,12 @@ class CustomInputs {
     required TextEditingController controller, 
     bool? isPassword, bool? enabled, 
     List<TextInputFormatter>? formatter, 
+    TextInputType? textInputType,
     bool? readOnly,
     Function()? onTap,
     TextAlign? align}){
     return TextField(
+      keyboardType: textInputType,
       textAlign: align ?? TextAlign.left,
       onTap: onTap,
       readOnly: readOnly ?? false,
@@ -67,7 +68,6 @@ class CustomInputs {
   static customInputSearchSuggestion(){
     final _controller = Get.put(RegisterContactsController());
     return  GooglePlaceAutoCompleteTextField(
-              focusNode: _controller.focusGoogleSearch,
               textEditingController: _controller.enderecoController,
               googleAPIKey: "AIzaSyDT-8nXeXAGZC04-N84jS5K2WHRCrK-x-M",
               inputDecoration: InputDecoration(

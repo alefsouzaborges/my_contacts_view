@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, file_names
 
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:my_contacts_view/modules/contacts/controller/register_contacts_controller.dart';
-import 'package:my_contacts_view/modules/contacts/view/search_api_google.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
 import 'package:my_contacts_view/widgets/dialogs/customDialogs.dart';
 import 'package:my_contacts_view/widgets/text/customText.dart';
@@ -50,6 +48,7 @@ class RegisterContactsPage extends StatelessWidget {
                         children: [
                           CustomText.customTextMain(text: 'CPF', alignment: Alignment.centerLeft),
                           CustomInputs.customInputMain(
+                            textInputType: TextInputType.number,
                             controller: controller.cpfController,
                             formatter: [
                               controller.cpfMaskFormater
@@ -87,6 +86,7 @@ class RegisterContactsPage extends StatelessWidget {
 
                 CustomText.customTextMain(text: 'TELEFONE', alignment: Alignment.centerLeft),
                 CustomInputs.customInputMain(
+                  textInputType: TextInputType.number,
                   controller: controller.phoneController,
                   formatter: [
                     controller.phoneMaskFormater
@@ -101,6 +101,7 @@ class RegisterContactsPage extends StatelessWidget {
                         children: [
                           CustomText.customTextMain(text: 'CEP', alignment: Alignment.centerLeft),
                           CustomInputs.customInputMain(
+                            textInputType: TextInputType.number,
                             controller: controller.cepController,
                             formatter: [
                               controller.cepMaslFormater

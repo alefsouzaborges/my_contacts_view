@@ -6,7 +6,6 @@ import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:my_contacts_view/modules/auth/controller/auth_controller.dart';
 import 'package:my_contacts_view/modules/auth/view/signUp.dart';
-import 'package:my_contacts_view/utils/colors/customColors.dart';
 import 'package:my_contacts_view/widgets/buttons/custonButtons.dart';
 import 'package:my_contacts_view/widgets/inputs/customInputs.dart';
 import 'package:my_contacts_view/widgets/text/customText.dart';
@@ -53,7 +52,6 @@ class AuthPage extends StatelessWidget {
                               margin: const EdgeInsets.only(top: 10),
                               child: CustomButtons.customButtonsMain(
                               onPressed: (){
-                                //Get.to(() => HomePage());
                                 controller.auth(context: context);
                               }, 
                               title: 'ENTRAR'),

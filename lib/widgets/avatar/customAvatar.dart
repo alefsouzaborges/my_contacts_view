@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, file_names
 
 import 'package:flutter/material.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
@@ -28,7 +28,7 @@ class CustomAvatar {
               )
             ),
           ),
-          CustomText.customTextAppBar(text: nome, fontSize: 15)
+          Expanded(child: CustomText.customTextAppBar(text: nome, fontSize: 15))
         ],
       ),
     );

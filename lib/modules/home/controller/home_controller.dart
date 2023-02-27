@@ -1,9 +1,9 @@
-import 'dart:developer';
+
+// ignore_for_file: unused_field
 
 import 'package:get/get.dart';
 
 import '../../../database/database.dart';
-import '../../contacts/model/contact_model.dart';
 
 class HomeController extends GetxController {
 

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,18 +50,14 @@ class SignUpPage extends StatelessWidget {
                 CustomInputs.customInputMain(controller: controller.rSenhaController, isPassword: true),
                   ],
                 ),
-      
                 Container(
                   margin: const EdgeInsets.only(top: 10),
                   child: CustomButtons.customButtonsMain(
                   onPressed: (){
-                    controller.signUp(
-                      context: context,
-                    );
+                    controller.signUp(context: context);
                   }, 
                   title: 'CADASTRAR'),
                 ),
-      
             ],
           ),
         ),

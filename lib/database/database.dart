@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, prefer_typing_uninitialized_variables
+// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, prefer_typing_uninitialized_variables, use_rethrow_when_possible
 
 import 'dart:developer';
 import 'package:get/get.dart';
@@ -28,7 +28,7 @@ class DatabaseLocal {
     log('Banco de dados criado');
     List<String> tables = [
       'CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, nome TEXT, email TEXT unique, senha TEXT)',
-      'CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY, nome TEXT, cpf TEXT unique, sexo TEXT, telefone TEXT, cep TEXT, endereco TEXT, uf TEXT ,complemento TEXT, latitude TEXT, longitude TEXT)',
+      'CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY, nome TEXT, cpf TEXT unique, sexo TEXT, telefone TEXT, cep TEXT, endereco TEXT, uf TEXT ,complemento TEXT, latitude TEXT, longitude TEXT, email_cadastro TEXT)',
      // 'CREATE TABLE IF NOT EXISTS auditoria_itens (id INTEGER PRIMARY KEY, codbarras TEXT, qtde TEXT, id_auditoria INTEGER, auditoria_cega TEXT)'
     ];
     for (String table in tables) {
@@ -53,7 +53,6 @@ class DatabaseLocal {
   Future signUp({required AuthModel model}) async {
     await init();
    try {
-      RxList data = RxList();
     await database!.transaction((txn) async {
       await txn.rawInsert(
           'INSERT INTO usuarios(nome, email, senha) VALUES(?,?,?)', [
@@ -71,9 +70,23 @@ class DatabaseLocal {
   Future deleteAccount() async {
     await init();
    try {
-      RxList data = RxList();
     await database!.transaction((txn) async {
       await txn.rawInsert('DELETE FROM usuarios', [
+       ]).then((value) => {
+        log(value.toString()),
+        deleteAllContacts()
+       });
+    });
+   } on DatabaseException catch (e) {
+    throw e;
+   }
+  }
+
+    Future deleteAllContacts() async {
+    await init();
+   try {
+    await database!.transaction((txn) async {
+      await txn.rawInsert('DELETE FROM contatos', [
        ]).then((value) => {
         log(value.toString()),
        });
@@ -83,13 +96,12 @@ class DatabaseLocal {
    }
   }
 
-  Future addContact({required ContactModel model}) async {
+  Future addContact({required ContactModel model, required String email_cadastro}) async {
     await init();
    try {
-    RxList data = RxList();
     await database!.transaction((txn) async {
       await txn.rawInsert(
-          'INSERT INTO contatos(nome, cpf, sexo, telefone, cep, endereco, uf, complemento, latitude, longitude) VALUES(?,?,?,?,?,?,?,?,?,?)', [
+          'INSERT INTO contatos(nome, cpf, sexo, telefone, cep, endereco, uf, complemento, latitude, longitude, email_cadastro) VALUES(?,?,?,?,?,?,?,?,?,?,?)', [
         model.nome,
         model.cpf,
         model.sexo,
@@ -99,7 +111,8 @@ class DatabaseLocal {
         model.uf,
         model.complemento,
         model.latitude,
-        model.longitude
+        model.longitude,
+        email_cadastro
         ]).then((value) => {
         getAllContacts()
        });
@@ -112,10 +125,9 @@ class DatabaseLocal {
    Future updateContact({required ContactModel model}) async {
     await init();
    try {
-    RxList data = RxList();
     await database!.transaction((txn) async {
       await txn.rawInsert(
-          'UPDATE contatos SET nome = ?, cpf = ?, sexo = ?, telefone = ?, cep = ?, endereco = ?, uf = ?, complemento = ?,latitude = ?, longitude = ? WHERE id = ?', [
+          'UPDATE contatos SET nome = ?, cpf = ?, sexo = ?, telefone = ?, cep = ?, endereco = ?, uf = ?, complemento = ?,latitude = ?, longitude = ?, email_cadastro = ? WHERE id = ?', [
         model.nome,
         model.cpf,
         model.sexo,
@@ -139,7 +151,6 @@ class DatabaseLocal {
   Future deleteontact({required ContactModel model}) async {
     await init();
    try {
-    RxList data = RxList();
     await database!.transaction((txn) async {
       await txn.rawInsert(
           'DELETE FROM contatos WHERE id = ?', [

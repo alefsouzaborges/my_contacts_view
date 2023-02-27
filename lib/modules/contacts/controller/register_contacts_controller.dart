@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_new
+// ignore_for_file: unnecessary_new, prefer_const_constructors, avoid_function_literals_in_foreach_calls
 
 import 'dart:developer';
 
@@ -8,28 +8,59 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_contacts_view/database/database.dart';
+import 'package:my_contacts_view/modules/auth/model/auth_model.dart';
 import 'package:my_contacts_view/modules/contacts/model/adress_model.dart';
 import 'package:my_contacts_view/modules/contacts/model/contact_model.dart';
 import 'package:my_contacts_view/server/dioConnect.dart';
+import 'package:my_contacts_view/shared/config.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../widgets/dialogs/customDialogs.dart';
 
 class RegisterContactsController extends GetxController {
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    sexoController.text = 'M';
-    getAllContacts();
-    connection = Dio(dioConnect.baseOptions);
-    connection.options.baseUrl = 'https://viacep.com.br/ws/';
-    super.onInit();
-  }
+    Set<Marker> markers = Set<Marker>();
 
-    var cpfMaskFormater = MaskTextInputFormatter(
+    @override
+    void onInit() {
+      sexoController.text = 'M';
+      getAllContacts();
+      connection = Dio(dioConnect.baseOptions);
+      connection.options.baseUrl = 'https://viacep.com.br/ws/';
+      super.onInit();
+    }
+    
+    TextEditingController nomeController = TextEditingController();
+    TextEditingController cpfController = TextEditingController();
+    TextEditingController sexoController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    TextEditingController cepController = TextEditingController();
+    TextEditingController enderecoController = TextEditingController();
+    TextEditingController complementoController = TextEditingController();
+    TextEditingController latitudeController = TextEditingController();
+    TextEditingController longitudeController = TextEditingController();
+    TextEditingController ufController = TextEditingController();
+    AuthModel authModel = AuthModel();
+    RxString gender = ''.obs;
+    RxString nameResumed = ''.obs;
+    RxBool isLoading = false.obs;
+    RxBool isEditing = false.obs;
+    RxInt id = 0.obs;
+    AdressModel adressModel = AdressModel();
+    List<dynamic> placesList = [];
+    FocusNode focusGoogleSearch = FocusNode();
+
+    final _dataBase = DatabaseLocal();
+
+    RxList<ContactModel> listContacts = RxList<ContactModel>();
+    Dio connection = Dio();
+    RxString url = ''.obs;
+    final dioConnect = Get.put(DioConnectController());
+
+       var cpfMaskFormater = MaskTextInputFormatter(
     mask: '###.###.###-##', 
     filter: { "#": RegExp(r'[0-9]') },
     type: MaskAutoCompletionType.lazy
@@ -47,35 +78,11 @@ class RegisterContactsController extends GetxController {
     type: MaskAutoCompletionType.lazy
     );
 
-    TextEditingController nomeController = TextEditingController();
-    TextEditingController cpfController = TextEditingController();
-    TextEditingController sexoController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController cepController = TextEditingController();
-    TextEditingController enderecoController = TextEditingController();
-    TextEditingController complementoController = TextEditingController();
-    TextEditingController latitudeController = TextEditingController();
-    TextEditingController longitudeController = TextEditingController();
-    TextEditingController ufController = TextEditingController();
-    RxString gender = ''.obs;
-    RxString nameResumed = ''.obs;
-    RxBool isLoading = false.obs;
-    RxBool isEditing = false.obs;
-    RxInt id = 0.obs;
-    AdressModel adressModel = AdressModel();
-    List<dynamic> placesList = [];
-    FocusNode focusGoogleSearch = FocusNode();
-
-    final _dataBase = DatabaseLocal();
-
-    RxList<ContactModel> listContacts = RxList<ContactModel>();
-    Dio connection = Dio();
-    RxString url = ''.obs;
-    final dioConnect = Get.put(DioConnectController());
-
     addContact({required BuildContext context}) async {
+      authModel = await ConfigStorageController.getAuthStorage();
       if(nomeController.text.isEmpty || cpfController.text.isEmpty || 
-         phoneController.text.isEmpty || cepController.text.isEmpty || sexoController.text.isEmpty){
+         phoneController.text.isEmpty || cepController.text.isEmpty || sexoController.text.isEmpty || 
+         latitudeController.text.isEmpty || longitudeController.text.isEmpty){
          return CustomDialogs.customDialogAuth(
           title: 'Verifique os campos', 
           subtitle: 'Preencha todos os campos corretamente.',
@@ -96,7 +103,7 @@ class RegisterContactsController extends GetxController {
             model.uf = ufController.text;
             model.latitude = latitudeController.text.isEmpty ? '' : latitudeController.text;
             model.longitude = longitudeController.text;
-            await _dataBase.addContact(model: model);
+            await _dataBase.addContact(model: model, email_cadastro: authModel.email.toString());
             return CustomDialogs.customDialogAuth(
             title: 'Sucesso', 
             subtitle: 'Contato cadastrado com sucesso.',
@@ -136,6 +143,18 @@ class RegisterContactsController extends GetxController {
       List<ContactModel> result = await _dataBase.getAllContacts();
       if(result.isNotEmpty){
         listContacts.value = result.obs;
+        result.forEach((element) async {
+          markers.add(Marker(markerId: MarkerId(element.nome!),
+          position: LatLng(double.parse(element.latitude.toString()), double.parse(element.longitude.toString())),
+          onTap: (){},
+          icon: await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(
+              size: Size.fromHeight(10)
+            ),
+            element.sexo == 'M' ? 'assets/icons/male.png' : 'assets/icons/female.png'
+          )
+          ));
+        });
         clearInputs();
       }
     }
@@ -210,7 +229,8 @@ class RegisterContactsController extends GetxController {
     editContact({required BuildContext context}) async {
       isEditing.value = true;
        if(nomeController.text.isEmpty || cpfController.text.isEmpty || 
-         phoneController.text.isEmpty || cepController.text.isEmpty || sexoController.text.isEmpty){
+         phoneController.text.isEmpty || cepController.text.isEmpty || sexoController.text.isEmpty ||
+         latitudeController.text.isEmpty || longitudeController.text.isEmpty){
          return CustomDialogs.customDialogAuth(
           title: 'Verifique os campos', 
           subtitle: 'Preencha todos os campos corretamente.',
@@ -314,21 +334,11 @@ class RegisterContactsController extends GetxController {
       ufController.clear();
     }
 
-    placeAutoCompleteRequest({required String query}) async {
-     Dio connectGoogleApi = Dio();
-     
-     Response response = await connectGoogleApi.get('https://maps.googleapis.com/maps/api/place/autocomplete/json',
-      queryParameters: {
-        'input': query, 
-        'key': "AIzaSyDT-8nXeXAGZC04-N84jS5K2WHRCrK-x-M"
-        });
+    loadContactsMarker() async {
 
-        if(response.statusCode == 200){
-        log(response.data.toString());
+      var contacts = await getAllContacts();
 
-        }else{
-          throw Exception('Falha ao carregar os dados');
-        }
+      log(contacts.toString());
 
     }
 

@@ -1,13 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:my_contacts_view/modules/auth/controller/auth_controller.dart';
-import 'package:my_contacts_view/modules/auth/view/auth_view.dart';
+import 'package:my_contacts_view/modules/contacts/controller/register_contacts_controller.dart';
 import 'package:my_contacts_view/widgets/dialogs/customDialogs.dart';
-
-import '../../../shared/config.dart';
 import '../../../utils/colors/customColors.dart';
 import '../../../widgets/buttons/custonButtons.dart';
 import '../../../widgets/inputs/customInputs.dart';
@@ -16,6 +14,7 @@ import '../../../widgets/text/customText.dart';
 class PerfilPage extends StatelessWidget {
 
   final _controller = Get.put(AuthController());
+  final _controllerRegister = Get.put(RegisterContactsController());
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +63,8 @@ class PerfilPage extends StatelessWidget {
                                   subtitle: 'Tem certeza de que deseja excluir sua conta?',
                                   onPressedConfirm: () async {
                                     await _controller.deleteAccount(context: context);
+                                    await _controllerRegister.getAllContacts();
+                                    _controllerRegister.listContacts.clear();
                                   });
                                   
                               }, 

@@ -1,10 +1,6 @@
 // ignore_for_file: unnecessary_new
-
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:my_contacts_view/database/database.dart';
 import 'package:my_contacts_view/modules/auth/model/auth_model.dart';
 import 'package:my_contacts_view/modules/home/view/home_page.dart';
@@ -28,10 +24,8 @@ class AuthController extends GetxController {
   TextEditingController senhaController = TextEditingController();
   TextEditingController rSenhaController = TextEditingController();
   AuthModel user = AuthModel();
-  RxList<AuthModel> AuthList = RxList<AuthModel>();
+  
   final _database = DatabaseLocal();
-
-
 
   auth({required BuildContext context}) async {
    if(emailController.text.isEmpty || senhaController.text.isEmpty){
@@ -61,21 +55,43 @@ class AuthController extends GetxController {
 
   signUp({required BuildContext context}) async {
    try {
-      AuthModel model = AuthModel();
-    model.nome = nomeController.text;
-    model.email = emailController.text;
-    model.senha = senhaController.text;
-    await _database.signUp(model: model);
-    return  CustomDialogs.customDialogAuth(
-        title: 'Sucesso', 
-        subtitle: 'Cadastro realizado com sucesso! faça login!',
+     if(nomeController.text.isEmpty || emailController.text.isEmpty
+        || senhaController.text.isEmpty || rSenhaController.text.isEmpty){
+        return  CustomDialogs.customDialogAuth(
+        title: 'Campos inválidos', 
+        subtitle: 'Preencha todos os campos corretamente.',
         context: context,
         onPressed: (){
           Get.back();
-          Get.back();
         }
         );
-    
+     }else{
+        if(senhaController.text != rSenhaController.text){
+          return  CustomDialogs.customDialogAuth(
+          title: 'Falha', 
+          subtitle: 'As senhas não se conhecidem.',
+          context: context,
+          onPressed: (){
+            Get.back();
+          }
+          );
+        }else{
+          AuthModel model = AuthModel();
+          model.nome = nomeController.text;
+          model.email = emailController.text;
+          model.senha = senhaController.text;
+          await _database.signUp(model: model);
+          return  CustomDialogs.customDialogAuth(
+              title: 'Sucesso', 
+              subtitle: 'Cadastro realizado com sucesso! faça login!',
+              context: context,
+              onPressed: (){
+                Get.back();
+                Get.back();
+              }
+              );
+        }
+     }
    } on DatabaseException catch (e) {
      if(e.isUniqueConstraintError()){
       return  CustomDialogs.customDialogAuth(
@@ -85,10 +101,10 @@ class AuthController extends GetxController {
         );
      }
        return  CustomDialogs.customDialogAuth(
-        title: 'Falha no cadastro', 
-        subtitle: e.toString(),
-        context: context,
-        );
+      title: 'Falha no cadastro', 
+      subtitle: e.toString(),
+      context: context,
+      );
    }
   }
 
@@ -96,6 +112,8 @@ class AuthController extends GetxController {
     try {
       await ConfigStorageController.logoutAuthStorage();
       await _database.deleteAccount();
+      await _database.getAllContacts();
+      
       clearInputs();
       Get.off(() => AuthPage());
     } catch (e) {

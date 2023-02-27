@@ -1,4 +1,4 @@
-// ignore_for_file: sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, file_names, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
