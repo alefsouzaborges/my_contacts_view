@@ -34,17 +34,7 @@ class AuthPage extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    //height: MediaQuery.of(context).size.height,
-                    child: Center(
-                      child: CustomText.customTextMain(
-                        text: 'LOGIN', 
-                        color: CustomColors.PRIMARYCOLOR,
-                        fontSize: 30)),
-                  ),
-                ),
+                  Image.asset('assets/images/logo.png', width: 200,height: 150),
                   Center(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -68,7 +58,6 @@ class AuthPage extends StatelessWidget {
                               }, 
                               title: 'ENTRAR'),
                             ),
-          
                             Container(
                               margin: const EdgeInsets.only(top: 10),
                               child: CustomButtons.customButtonsText(
@@ -78,8 +67,7 @@ class AuthPage extends StatelessWidget {
                               }, 
                               ),
                             ),
-          
-                            
+                            SizedBox(height: 50,)
                           ],
                         ),
                       )

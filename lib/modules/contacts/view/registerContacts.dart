@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:my_contacts_view/modules/contacts/controller/register_contacts_controller.dart';
+import 'package:my_contacts_view/modules/contacts/view/search_api_google.dart';
 import 'package:my_contacts_view/utils/colors/customColors.dart';
 import 'package:my_contacts_view/widgets/dialogs/customDialogs.dart';
 import 'package:my_contacts_view/widgets/text/customText.dart';
@@ -120,6 +121,7 @@ class RegisterContactsPage extends StatelessWidget {
                               isLoading: controller.isLoading.value,
                               onPressed: () async {
                                 await controller.getAdressByCep(context: context);
+                                controller.focusGoogleSearch.requestFocus();
                               }, 
                               icon: Icons.search
                               );
@@ -131,9 +133,8 @@ class RegisterContactsPage extends StatelessWidget {
                   ],
                 ),
                 CustomText.customTextMain(text: 'ENDEREÇO', alignment: Alignment.centerLeft),
-                CustomInputs.customInputMain(controller: controller.enderecoController),
-
-                       Row(
+                CustomInputs.customInputSearchSuggestion(),
+                Row(
                   children: [
                     Expanded(
                       flex: 3,

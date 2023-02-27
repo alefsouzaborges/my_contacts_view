@@ -19,7 +19,7 @@ import '../../../widgets/dialogs/customDialogs.dart';
 
 class RegisterContactsController extends GetxController {
 
-    @override
+  @override
   void onInit() {
     // TODO: implement onInit
     sexoController.text = 'M';
@@ -63,6 +63,8 @@ class RegisterContactsController extends GetxController {
     RxBool isEditing = false.obs;
     RxInt id = 0.obs;
     AdressModel adressModel = AdressModel();
+    List<dynamic> placesList = [];
+    FocusNode focusGoogleSearch = FocusNode();
 
     final _dataBase = DatabaseLocal();
 
@@ -266,7 +268,6 @@ class RegisterContactsController extends GetxController {
       }
     }
 
-    
     deleteContact({required BuildContext context}) async {
       try {
         ContactModel model = ContactModel();
@@ -311,6 +312,24 @@ class RegisterContactsController extends GetxController {
       latitudeController.clear();
       longitudeController.clear();
       ufController.clear();
+    }
+
+    placeAutoCompleteRequest({required String query}) async {
+     Dio connectGoogleApi = Dio();
+     
+     Response response = await connectGoogleApi.get('https://maps.googleapis.com/maps/api/place/autocomplete/json',
+      queryParameters: {
+        'input': query, 
+        'key': "AIzaSyDT-8nXeXAGZC04-N84jS5K2WHRCrK-x-M"
+        });
+
+        if(response.statusCode == 200){
+        log(response.data.toString());
+
+        }else{
+          throw Exception('Falha ao carregar os dados');
+        }
+
     }
 
 
