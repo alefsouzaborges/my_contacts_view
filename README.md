@@ -1,16 +1,11 @@
 # my_contacts_view
 
-A new Flutter project.
+O aplicativo consiste em poder cadastrar contatos e sua localização, 
 
-## Getting Started
+com isso, é possivel visualizar no mapa o local onde a pessoa mora,
 
-This project is a starting point for a Flutter application.
+é possivel Listar , Cadastrar, atualizar e excluir um contato da sua lista.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+tambem é possivel remover sua propria conta perdendo assim todos os contatos cadastrados.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
