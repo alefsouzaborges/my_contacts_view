@@ -143,6 +143,7 @@ class RegisterContactsController extends GetxController {
       List<ContactModel> result = await _dataBase.getAllContacts();
       if(result.isNotEmpty){
         listContacts.value = result.obs;
+        markers.clear();
         result.forEach((element) async {
           markers.add(Marker(markerId: MarkerId(element.nome!),
           position: LatLng(double.parse(element.latitude.toString()), double.parse(element.longitude.toString())),
@@ -334,13 +335,6 @@ class RegisterContactsController extends GetxController {
       ufController.clear();
     }
 
-    loadContactsMarker() async {
-
-      var contacts = await getAllContacts();
-
-      log(contacts.toString());
-
-    }
-
+  
 
 }

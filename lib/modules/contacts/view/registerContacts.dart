@@ -219,6 +219,7 @@ class RegisterContactsPage extends StatelessWidget {
                       subtitle: 'Deseja remover o contato selecionado?',
                       onPressedConfirm: () async {
                         await controller.deleteContact(context: context);
+                        controller.listContacts.clear();
                         Get.back();
                       });
                   }, 
